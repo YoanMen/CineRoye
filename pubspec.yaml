@@ -1,0 +1,41 @@
+name: cineroye
+description: A new Flutter project.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.0.5 <4.0.0"
+
+dependencies:
+  carousel_slider: ^4.2.1
+  dio: ^5.2.1+1
+  flutter:
+    sdk: flutter
+  flutter_native_splash: ^2.3.1
+  flutter_riverpod: ^2.3.6
+  html: ^0.15.4
+  http: ^1.1.0
+  intl: ^0.18.1
+  multiple_result: ^5.0.0
+  smooth_page_indicator: ^1.1.0
+  url_launcher: ^6.1.12
+  webview_flutter: ^4.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  mockito: ^5.4.2
+
+flutter_native_splash:
+  android: true
+  ios: true
+
+  color: "#12121D"
+  image: "assets/logo.png"
+
+  android_12:
+    color: "#12121D"
+    image: "assets/logo.png"
+flutter:
+  uses-material-design: true

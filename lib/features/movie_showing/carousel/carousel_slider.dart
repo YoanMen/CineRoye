@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cineroye/core/constant.dart';
 import 'package:cineroye/features/movie_showing/movie_showing_controller.dart';
 import 'package:cineroye/features/movie_showing/onDisplay/movie.dart';
 import 'package:cineroye/theme/palette.dart';
@@ -42,15 +41,24 @@ class Carousel extends ConsumerWidget {
                 .changeSliderIndex(index),
           ),
         ),
-        AnimatedSmoothIndicator(
-            effect: WormEffect(
-                type: WormType.normal,
-                dotHeight: 14,
-                dotWidth: 14,
-                activeDotColor: Theme.of(context).colorScheme.primary,
-                dotColor: greyColor.withOpacity(0.15)),
-            activeIndex: ref.watch(movieShowingControllerProvider).sliderIndex,
-            count: movies.length)
+        ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.12)),
+            child: AnimatedSmoothIndicator(
+                effect: WormEffect(
+                    type: WormType.normal,
+                    dotHeight: 14,
+                    dotWidth: 14,
+                    activeDotColor: Theme.of(context).colorScheme.primary,
+                    dotColor: greyColor.withOpacity(0.15)),
+                activeIndex:
+                    ref.watch(movieShowingControllerProvider).sliderIndex,
+                count: movies.length),
+          ),
+        )
       ],
     );
   }
@@ -97,18 +105,18 @@ class CarouselImage extends ConsumerWidget {
             ),
           ),
         ),
-        Positioned(
-            bottom: 5,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Padding(
-                padding: const EdgeInsets.all(kmediumSpace),
-                child: Text(
-                  movie.title,
-                  style: theme.textTheme.headlineSmall,
-                ),
-              ),
-            )),
+        // Positioned(
+        //     bottom: 0,
+        //     child: SizedBox(
+        //       width: MediaQuery.of(context).size.width,
+        //       child: Padding(
+        //         padding: const EdgeInsets.all(kmediumSpace),
+        //         child: Text(
+        //           movie.title,
+        //           style: theme.textTheme.headlineSmall,
+        //         ),
+        //       ),
+        //     )),
       ],
     );
   }

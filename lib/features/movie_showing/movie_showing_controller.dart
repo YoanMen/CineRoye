@@ -101,7 +101,7 @@ class MovieShowingController extends StateNotifier<MovieShowingState> {
         projectionDays.add(projectionDay);
       } else {
         ProjectionDay projectionDay = ProjectionDay(
-            selected: false, currentColor: yellowColor.withOpacity(0.62));
+            selected: false, currentColor: yellowColor.withOpacity(0.45));
         projectionDays.add(projectionDay);
       }
     }
@@ -159,7 +159,7 @@ class MovieShowingController extends StateNotifier<MovieShowingState> {
           return ProjectionDay(selected: true, currentColor: yellowColor);
         }
         return ProjectionDay(
-            selected: false, currentColor: yellowColor.withOpacity(0.62));
+            selected: false, currentColor: yellowColor.withOpacity(0.45));
       }
       return ProjectionDay.initial();
     }).toList();

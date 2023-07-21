@@ -16,7 +16,7 @@ class ProjectionDay {
 
   ProjectionDay.initial()
       : selected = false,
-        currentColor = greyColor.withOpacity(0.62);
+        currentColor = greyColor.withOpacity(0.30);
 
   @override
   String toString() =>

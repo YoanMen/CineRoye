@@ -13,7 +13,7 @@ class MovieEntity {
   final List<dynamic> schedules;
   final String duration;
 
-  MovieEntity({
+  const MovieEntity({
     this.video,
     required this.realisator,
     required this.days,

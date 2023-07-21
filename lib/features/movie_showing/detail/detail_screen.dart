@@ -50,6 +50,7 @@ class DetailScreen extends ConsumerWidget {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: SizedBox(
+                        height: 30,
                         child: ref
                             .read(movieShowingControllerProvider.notifier)
                             .showScheduleForDaySelected(movie)),
@@ -84,10 +85,8 @@ class DetaillingMovie extends StatelessWidget {
           padding: const EdgeInsets.all(kmediumSpace),
           child: Text(
             movie.overview,
+            style: theme.textTheme.titleMedium,
           ),
-        ),
-        const SizedBox(
-          height: kmediumSpace,
         ),
 
         //* Realisator
@@ -176,7 +175,7 @@ class PosterImage extends StatelessWidget {
               height: MediaQuery.of(context).size.height / 2,
               child: Image.network(
                 movie.poster,
-                fit: BoxFit.fitHeight,
+                fit: BoxFit.fitWidth,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) {
                     return child;
@@ -200,8 +199,8 @@ class PosterImage extends StatelessWidget {
                 children: [
                   Text(
                     " ${movie.duration}min",
-                    style:
-                        theme.textTheme.titleSmall!.copyWith(color: greyColor),
+                    style: theme.textTheme.titleSmall!
+                        .copyWith(color: greyColor.withOpacity(0.6)),
                   ),
                   const SizedBox(
                     height: kmediumSpace,
@@ -226,8 +225,8 @@ class PosterImage extends StatelessWidget {
                     builder: (context) => VideoScreen(movie: movie),
                   )),
               icon: Icon(
-                Icons.play_circle,
-                color: yellowColor,
+                Icons.play_circle_fill_rounded,
+                color: yellowColor.withOpacity(0.8),
                 size: 80,
               ),
             ),

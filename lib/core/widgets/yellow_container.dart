@@ -27,13 +27,16 @@ class YellowContainer extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(padding ?? 4.0),
         child: Center(
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .labelLarge!
-                .copyWith(fontSize: fontSize ?? 14),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge!
+                  .copyWith(fontSize: fontSize ?? 14),
+            ),
           ),
         ),
       ),

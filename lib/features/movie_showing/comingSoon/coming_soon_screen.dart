@@ -1,8 +1,7 @@
 import 'package:cineroye/core/constant.dart';
-import 'package:cineroye/core/widgets/red_container.dart';
+import 'package:cineroye/core/widgets/error_message.dart';
 import 'package:cineroye/features/movie_showing/movie_showing_controller.dart';
 import 'package:cineroye/features/movie_showing/onDisplay/movie_list.dart';
-import 'package:cineroye/theme/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,63 +19,47 @@ class ComingSoonScreen extends ConsumerWidget {
       loading: () => const Center(
         child: CircularProgressIndicator(),
       ),
-      error: (error, stackTrace) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Erreur : $error"),
-            const SizedBox(
-              height: kmediumSpace,
-            ),
-            InkWell(
-                onTap: ref
-                    .read(movieShowingControllerProvider.notifier)
-                    .fetchComingSoon,
-                child: const RedContainer(text: 'Rafraichir la page'))
-          ],
-        ),
-      ),
-      data: (data) {
-        return Scaffold(
-            body: RefreshIndicator(
-          backgroundColor: blackColor,
+      error: (error, stackTrace) => ErrorMessage(
           onRefresh:
               ref.read(movieShowingControllerProvider.notifier).fetchComingSoon,
-          child: isPhone
-              ? Column(
-                  children: [
-                    const SizedBox(
-                      height: kmediumSpace,
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: data.length,
-                        itemBuilder: (context, index) =>
-                            MovieList(movie: data[index], theme: theme),
+          error: error),
+      data: (data) {
+        return data.isEmpty
+            ? ErrorMessage(
+                onRefresh: ref
+                    .read(movieShowingControllerProvider.notifier)
+                    .fetchComingSoon,
+                error: "Aucun films prochainement",
+              )
+            : Scaffold(
+                body: SafeArea(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: kmediumSpace,
                       ),
-                    ),
-                  ],
-                )
-              : Column(
-                  children: [
-                    const SizedBox(
-                      height: kmediumSpace,
-                    ),
-                    Expanded(
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                mainAxisExtent: 200, crossAxisCount: 2),
-                        itemCount: data.length,
-                        itemBuilder: (context, index) => MovieList(
-                          movie: data[index],
-                          theme: theme,
-                        ),
+                      Expanded(
+                        child: isPhone
+                            ? ListView.builder(
+                                itemCount: data.length,
+                                itemBuilder: (context, index) =>
+                                    MovieList(movie: data[index], theme: theme),
+                              )
+                            : GridView.builder(
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        mainAxisExtent: 200, crossAxisCount: 2),
+                                itemCount: data.length,
+                                itemBuilder: (context, index) => MovieList(
+                                  movie: data[index],
+                                  theme: theme,
+                                ),
+                              ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-        ));
+              );
       },
     );
   }

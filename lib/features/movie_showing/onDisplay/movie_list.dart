@@ -20,22 +20,23 @@ class MovieList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      onTap: () => ref
-          .read(movieShowingControllerProvider.notifier)
-          .detailedMovie(context, movie),
-      child: SizedBox(
-        height: 200,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: kmediumSpace),
-              child: SizedBox(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: kmediumSpace),
+      child: GestureDetector(
+        onTap: () => ref
+            .read(movieShowingControllerProvider.notifier)
+            .detailedMovie(context, movie),
+        child: Container(
+          padding: const EdgeInsets.only(left: kmediumSpace),
+          height: 160,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
                 height: 160,
                 width: 120,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(10),
                   child: Image.network(
                     movie.poster,
                     fit: BoxFit.fill,
@@ -50,63 +51,62 @@ class MovieList extends ConsumerWidget {
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      movie.title,
-                      style: theme.textTheme.titleMedium,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    Text(
-                      "${movie.duration}min",
-                      style: theme.textTheme.titleSmall!
-                          .copyWith(color: greyColor),
-                    ),
-                    const SizedBox(
-                      height: 2,
-                    ),
-                    SizedBox(
-                      height: 25,
-                      width: double.infinity,
-                      child: ListView.builder(
-                        itemCount: movie.genres.length,
-                        itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(right: 4),
-                          child:
-                              RedContainer(text: movie.genres[index] as String),
-                        ),
-                        scrollDirection: Axis.horizontal,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        movie.title,
+                        style: theme.textTheme.titleMedium,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
-                    ),
-                    const SizedBox(
-                      height: kmediumSpace / 2,
-                    ),
-                    Text(
-                      movie.overview,
-                      style: theme.textTheme.bodyMedium,
-                      maxLines: (movie.firstProjection != null) ? 3 : 4,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: kmediumSpace / 2),
-                    SizedBox(
+                      Text(
+                        "${movie.duration}min",
+                        style: theme.textTheme.titleSmall!
+                            .copyWith(color: greyColor.withOpacity(0.6)),
+                      ),
+                      const Spacer(),
+                      SizedBox(
                         height: 25,
-                        width: 180,
-                        child: movie.firstProjection != null
-                            ? YellowContainer(
-                                text: movie.firstProjection!,
-                              )
-                            : null),
-                  ],
+                        width: double.infinity,
+                        child: ListView.builder(
+                          itemCount: movie.genres.length,
+                          itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.only(right: 4),
+                            child: RedContainer(
+                                text: movie.genres[index] as String),
+                          ),
+                          scrollDirection: Axis.horizontal,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: kmediumSpace,
+                      ),
+                      Text(
+                        movie.overview,
+                        textScaleFactor: 1,
+                        style: theme.textTheme.bodyMedium,
+                        maxLines: (movie.firstProjection != null) ? 3 : 5,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const Spacer(),
+                      if (movie.firstProjection != null)
+                        SizedBox(
+                            height: 25,
+                            width: 150,
+                            child: YellowContainer(
+                              text: movie.firstProjection!,
+                            )),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

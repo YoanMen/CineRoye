@@ -7,11 +7,83 @@ import 'package:cineroye/features/movie_showing/video/video_screen.dart';
 import 'package:cineroye/theme/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:transparent_image/transparent_image.dart';
+
+class DetailScreenAnimation extends StatefulWidget {
+  const DetailScreenAnimation({Key? key, required this.movie})
+      : super(key: key);
+  final Movie movie;
+  @override
+  State<DetailScreenAnimation> createState() => _DetailScreenAnimationState();
+}
+
+class _DetailScreenAnimationState extends State<DetailScreenAnimation>
+    with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late AnimationController _scheduleController;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    _scheduleController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 120));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+    _scheduleController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DetailScreen(
+        movie: widget.movie,
+        animationController: _controller,
+        animationSchedulesController: _scheduleController);
+  }
+}
 
 class DetailScreen extends ConsumerWidget {
-  const DetailScreen({Key? key, required this.movie}) : super(key: key);
+  DetailScreen(
+      {Key? key,
+      required this.movie,
+      required this.animationController,
+      required this.animationSchedulesController})
+      : posterOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: animationController, curve: const Interval(0.0, 0.2))),
+        titleOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: animationController, curve: const Interval(0.2, 0.4))),
+        genreOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: animationController, curve: const Interval(0.4, 0.6))),
+        dateOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: animationController, curve: const Interval(0.6, 0.8))),
+        textOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: animationController, curve: const Interval(0.8, 1.0))),
+        iconVideoOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: animationController, curve: const Interval(0.8, 1.0))),
+        scheduleOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+            parent: animationSchedulesController,
+            curve: const Interval(0.0, 1.0))),
+        super(key: key);
 
   final Movie movie;
+  final AnimationController animationController;
+  final AnimationController animationSchedulesController;
+
+  final Animation<double> posterOpacity;
+  final Animation<double> titleOpacity;
+  final Animation<double> genreOpacity;
+  final Animation<double> dateOpacity;
+  final Animation<double> textOpacity;
+  final Animation<double> iconVideoOpacity;
+  final Animation<double> scheduleOpacity;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(movieShowingControllerProvider).selectableDays;
@@ -36,14 +108,25 @@ class DetailScreen extends ConsumerWidget {
                 child: ListView(
               padding: const EdgeInsets.only(top: 0),
               children: [
-                PosterImage(movie: movie, theme: theme),
+                PosterImage(
+                    movie: movie,
+                    theme: theme,
+                    posterOpacity: posterOpacity,
+                    titleOpacity: titleOpacity,
+                    iconVideoOpacity: iconVideoOpacity),
                 const SizedBox(
                   height: kmediumSpace,
                 ),
-                GenreContainers(movie: movie),
-                ProjectionTimeCard(
-                  movie: movie,
-                  theme: theme,
+                FadeTransition(
+                    opacity: genreOpacity,
+                    child: GenreContainers(movie: movie)),
+                FadeTransition(
+                  opacity: dateOpacity,
+                  child: ProjectionTimeCard(
+                    movie: movie,
+                    theme: theme,
+                    animationSchedulesController: animationSchedulesController,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: kmediumSpace),
@@ -53,10 +136,13 @@ class DetailScreen extends ConsumerWidget {
                         height: 30,
                         child: ref
                             .read(movieShowingControllerProvider.notifier)
-                            .showScheduleForDaySelected(movie)),
+                            .showScheduleForDaySelected(
+                                movie, scheduleOpacity)),
                   ),
                 ),
-                DetaillingMovie(movie: movie, theme: theme),
+                FadeTransition(
+                    opacity: textOpacity,
+                    child: DetaillingMovie(movie: movie, theme: theme)),
               ],
             ))
           ],
@@ -85,7 +171,7 @@ class DetaillingMovie extends StatelessWidget {
           padding: const EdgeInsets.all(kmediumSpace),
           child: Text(
             movie.overview,
-            style: theme.textTheme.titleMedium,
+            style: theme.textTheme.titleMedium?.copyWith(fontSize: 18),
           ),
         ),
 
@@ -144,8 +230,14 @@ class PosterImage extends StatelessWidget {
     super.key,
     required this.movie,
     required this.theme,
+    required this.posterOpacity,
+    required this.titleOpacity,
+    required this.iconVideoOpacity,
   });
 
+  final Animation<double> posterOpacity;
+  final Animation<double> titleOpacity;
+  final Animation<double> iconVideoOpacity;
   final Movie movie;
   final ThemeData theme;
 
@@ -155,35 +247,27 @@ class PosterImage extends StatelessWidget {
       alignment: Alignment.center,
       clipBehavior: Clip.none,
       children: [
-        Container(
-          constraints:
-              BoxConstraints(minHeight: MediaQuery.of(context).size.height / 2),
-          child: ShaderMask(
-            shaderCallback: (bounds) {
-              return LinearGradient(
-                  begin: Alignment.center,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Theme.of(context).scaffoldBackgroundColor,
-                    Colors.transparent
-                  ]).createShader(
-                  Rect.fromLTRB(0, 0, bounds.width, bounds.height));
-            },
-            blendMode: BlendMode.dstIn,
+        ShaderMask(
+          shaderCallback: (bounds) {
+            return LinearGradient(
+                    begin: Alignment.center,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                  Theme.of(context).scaffoldBackgroundColor,
+                  Colors.transparent
+                ])
+                .createShader(Rect.fromLTRB(0, 0, bounds.width, bounds.height));
+          },
+          blendMode: BlendMode.dstIn,
+          child: FadeTransition(
+            opacity: posterOpacity,
             child: SizedBox(
               width: double.infinity,
-              height: MediaQuery.of(context).size.height / 2,
-              child: Image.network(
-                movie.poster,
+              height: MediaQuery.of(context).size.height / 2.5,
+              child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image: movie.poster,
                 fit: BoxFit.fitWidth,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  }
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
               ),
             ),
           ),
@@ -194,40 +278,43 @@ class PosterImage extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             child: Padding(
               padding: const EdgeInsets.all(kmediumSpace),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    " ${movie.duration}min",
-                    style: theme.textTheme.titleSmall!
-                        .copyWith(color: greyColor.withOpacity(0.6)),
-                  ),
-                  const SizedBox(
-                    height: kmediumSpace,
-                  ),
-                  Text(
-                    movie.title,
-                    style: theme.textTheme.titleLarge,
-                  ),
-                ],
+              child: FadeTransition(
+                opacity: titleOpacity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "${movie.duration}min",
+                      style: theme.textTheme.titleMedium!
+                          .copyWith(color: greyColor.withOpacity(0.6)),
+                    ),
+                    Text(
+                      movie.title.toUpperCase(),
+                      style: theme.textTheme.titleLarge?.copyWith(fontSize: 24),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
         if (movie.video != null)
-          SizedBox(
-            height: 128,
-            width: 128,
-            child: IconButton(
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VideoScreen(movie: movie),
-                  )),
-              icon: Icon(
-                Icons.play_circle_fill_rounded,
-                color: yellowColor.withOpacity(0.8),
-                size: 80,
+          FadeTransition(
+            opacity: iconVideoOpacity,
+            child: SizedBox(
+              height: 128,
+              width: 128,
+              child: IconButton(
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => VideoScreen(movie: movie),
+                    )),
+                icon: Icon(
+                  Icons.play_circle_fill_rounded,
+                  color: yellowColor.withOpacity(0.62),
+                  size: 80,
+                ),
               ),
             ),
           ),

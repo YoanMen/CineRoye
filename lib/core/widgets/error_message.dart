@@ -1,3 +1,4 @@
+import 'package:cineroye/core/constant.dart';
 import 'package:cineroye/theme/palette.dart';
 import 'package:flutter/material.dart';
 
@@ -16,16 +17,20 @@ class ErrorMessage extends StatelessWidget {
       backgroundColor: blackColor,
       onRefresh: onRefresh,
       child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         child: SizedBox(
-          height: MediaQuery.of(context).size.height -
-              MediaQuery.of(context).padding.top,
+          height: MediaQuery.of(context).size.height,
           child: Center(
-            child: Text(
-              '$error',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(color: greyColor.withOpacity(0.62)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kmediumSpace),
+              child: Text(
+                '$error',
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge
+                    ?.copyWith(color: greyColor.withOpacity(0.62)),
+              ),
             ),
           ),
         ),

@@ -5,6 +5,7 @@ import 'package:cineroye/theme/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class Carousel extends ConsumerWidget {
   Carousel({super.key, required this.movies});
@@ -15,8 +16,6 @@ class Carousel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var isPhone = MediaQuery.of(context).size.width < 512;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,9 +27,7 @@ class Carousel extends ConsumerWidget {
           carouselController: buttonCarouselController,
           options: CarouselOptions(
             enlargeCenterPage: true,
-            height: isPhone
-                ? MediaQuery.of(context).size.height / 2
-                : MediaQuery.of(context).size.height - 200,
+            height: MediaQuery.of(context).size.height / 2,
             autoPlay: true,
             autoPlayInterval: const Duration(seconds: 8),
             autoPlayAnimationDuration: const Duration(seconds: 2),
@@ -44,7 +41,7 @@ class Carousel extends ConsumerWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(30),
           child: Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary.withOpacity(0.12)),
             child: AnimatedSmoothIndicator(
@@ -99,24 +96,17 @@ class CarouselImage extends ConsumerWidget {
               },
               blendMode: BlendMode.dstIn,
               child: SizedBox(
-                width: double.infinity,
-                child: Image.network(fit: BoxFit.fitHeight, movie.poster),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: movie.poster,
+                      fit: BoxFit.fitHeight,
+                    )),
               ),
             ),
           ),
         ),
-        // Positioned(
-        //     bottom: 0,
-        //     child: SizedBox(
-        //       width: MediaQuery.of(context).size.width,
-        //       child: Padding(
-        //         padding: const EdgeInsets.all(kmediumSpace),
-        //         child: Text(
-        //           movie.title,
-        //           style: theme.textTheme.headlineSmall,
-        //         ),
-        //       ),
-        //     )),
       ],
     );
   }

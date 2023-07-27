@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cineroye/core/constant.dart';
 import 'package:cineroye/core/widgets/yellow_container.dart';
 import 'package:cineroye/features/movie_showing/comingSoon/coming_soon_screen.dart';
@@ -67,27 +69,32 @@ class MovieShowingController extends StateNotifier<MovieShowingState> {
     state = state.copyWith(indexPage: pageIndex);
   }
 
-  BottomNavigationBar navigationMenu() {
-    return BottomNavigationBar(
-      unselectedLabelStyle: TextStyle(color: whiteColor, fontSize: 14),
-      unselectedItemColor: whiteColor,
-      backgroundColor: blackColor,
-      currentIndex: state.indexPage,
-      onTap: (value) => switchPage(value),
-      items: [
-        BottomNavigationBarItem(
-            label: "A l'affiche",
-            icon: Icon(
-              Icons.theaters,
-              color: whiteColor,
-            )),
-        BottomNavigationBarItem(
-            label: "Prochainement",
-            icon: Icon(
-              Icons.event,
-              color: whiteColor,
-            ))
-      ],
+  Widget navigationMenu() {
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        child: BottomNavigationBar(
+          unselectedLabelStyle: TextStyle(color: whiteColor, fontSize: 14),
+          unselectedItemColor: greyColor,
+          backgroundColor: blackColor.withOpacity(0.62),
+          currentIndex: state.indexPage,
+          onTap: (value) => switchPage(value),
+          items: [
+            BottomNavigationBarItem(
+                label: "A l'affiche",
+                icon: Icon(
+                  Icons.theaters,
+                  color: greyColor,
+                )),
+            BottomNavigationBarItem(
+                label: "Prochainement",
+                icon: Icon(
+                  Icons.event,
+                  color: greyColor,
+                ))
+          ],
+        ),
+      ),
     );
   }
   //* setting a color of selectable day in detailed page
@@ -111,7 +118,8 @@ class MovieShowingController extends StateNotifier<MovieShowingState> {
 
   // * When day is selected display schedule to user
 
-  Row? showScheduleForDaySelected(Movie movie) {
+  Row? showScheduleForDaySelected(
+      Movie movie, Animation<double> scheduleOpacity) {
     int daySelected =
         state.selectableDays.indexWhere((element) => element.selected == true);
 
@@ -122,11 +130,14 @@ class MovieShowingController extends StateNotifier<MovieShowingState> {
           for (var schedule in schedules)
             Padding(
               padding: const EdgeInsets.only(right: kmediumSpace),
-              child: YellowContainer(
-                text: schedule,
-                fontSize: 18,
-                weight: 30,
-                width: 100,
+              child: FadeTransition(
+                opacity: scheduleOpacity,
+                child: YellowContainer(
+                  text: schedule,
+                  fontSize: 18,
+                  weight: 30,
+                  width: 100,
+                ),
               ),
             ),
         ],
@@ -170,7 +181,7 @@ class MovieShowingController extends StateNotifier<MovieShowingState> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DetailScreen(movie: movie),
+        builder: (context) => DetailScreenAnimation(movie: movie),
       ),
     );
   }

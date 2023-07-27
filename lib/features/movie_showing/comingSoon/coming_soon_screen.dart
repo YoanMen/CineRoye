@@ -29,34 +29,44 @@ class ComingSoonScreen extends ConsumerWidget {
                 onRefresh: ref
                     .read(movieShowingControllerProvider.notifier)
                     .fetchComingSoon,
-                error: "Aucun films prochainement",
+                error: "Aucun film n'est programmé pour le moment",
               )
             : Scaffold(
                 body: SafeArea(
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: kmediumSpace,
-                      ),
-                      Expanded(
-                        child: isPhone
-                            ? ListView.builder(
-                                itemCount: data.length,
-                                itemBuilder: (context, index) =>
-                                    MovieList(movie: data[index], theme: theme),
-                              )
-                            : GridView.builder(
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        mainAxisExtent: 200, crossAxisCount: 2),
-                                itemCount: data.length,
-                                itemBuilder: (context, index) => MovieList(
-                                  movie: data[index],
-                                  theme: theme,
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: kmediumSpace,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).padding.top,
+                        ),
+                        Expanded(
+                          child: isPhone
+                              ? ListView.builder(
+                                  itemCount: data.length,
+                                  itemBuilder: (context, index) => MovieList(
+                                      movie: data[index], theme: theme),
+                                )
+                              : GridView.builder(
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          mainAxisExtent: 200,
+                                          crossAxisCount: 2),
+                                  itemCount: data.length,
+                                  itemBuilder: (context, index) => MovieList(
+                                    movie: data[index],
+                                    theme: theme,
+                                  ),
                                 ),
-                              ),
-                      ),
-                    ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).padding.top + 20,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

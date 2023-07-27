@@ -1,4 +1,5 @@
 import 'package:cineroye/features/movie_showing/onDisplay/movie.dart';
+import 'package:cineroye/theme/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -19,6 +20,7 @@ class _VideoScreenState extends State<VideoScreen> {
     super.initState();
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(blackColor)
       ..setNavigationDelegate(
         NavigationDelegate(
           onWebResourceError: (WebResourceError error) {},

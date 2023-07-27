@@ -14,7 +14,6 @@ class DisplayScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var isPhone = MediaQuery.of(context).size.width < 512;
     final theme = Theme.of(context);
     final moviesData = ref.watch(movieShowingControllerProvider).movies;
 
@@ -31,59 +30,34 @@ class DisplayScreen extends ConsumerWidget {
           return Scaffold(
               body: SafeArea(
             child: RefreshIndicator(
-              backgroundColor: blackColor,
-              onRefresh:
-                  ref.read(movieShowingControllerProvider.notifier).fetchMovies,
-              child: isPhone
-                  ? SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: kmediumSpace,
-                          ),
-                          Carousel(movies: data),
-                          const SizedBox(
-                            height: kmediumSpace,
-                          ),
-                          ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: data.length,
-                            itemBuilder: (context, index) =>
-                                MovieList(movie: data[index], theme: theme),
-                          ),
-                        ],
+                backgroundColor: blackColor,
+                onRefresh: ref
+                    .read(movieShowingControllerProvider.notifier)
+                    .fetchMovies,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: kmediumSpace,
                       ),
-                    )
-                  : SingleChildScrollView(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            width: kmediumSpace,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width / 2,
-                            child: Center(child: Carousel(movies: data)),
-                          ),
-                          const SizedBox(
-                            width: kmediumSpace,
-                          ),
-                          ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: data.length,
-                            itemBuilder: (context, index) => Padding(
-                              padding: const EdgeInsets.only(top: kmediumSpace),
-                              child:
-                                  MovieList(movie: data[index], theme: theme),
-                            ),
-                          ),
-                        ],
+                      Carousel(movies: data),
+                      const SizedBox(
+                        height: kmediumSpace,
                       ),
-                    ),
-            ),
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: data.length,
+                        itemBuilder: (context, index) =>
+                            MovieList(movie: data[index], theme: theme),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).padding.top + 20,
+                      ),
+                    ],
+                  ),
+                )),
           ));
         });
   }

@@ -9,10 +9,12 @@ class ProjectionTimeCard extends ConsumerWidget {
     super.key,
     required this.movie,
     required this.theme,
+    required this.animationSchedulesController,
   });
 
   final Movie movie;
   final ThemeData theme;
+  final AnimationController animationSchedulesController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,6 +22,7 @@ class ProjectionTimeCard extends ConsumerWidget {
       padding: const EdgeInsets.all(kmediumSpace),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -27,12 +30,23 @@ class ProjectionTimeCard extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(right: kmediumSpace),
                 child: InkWell(
-                  onTap: () => ref
-                      .read(movieShowingControllerProvider.notifier)
-                      .selectADay(
-                        movie,
-                        movie.days.indexOf(day),
-                      ),
+                  onTap: () async {
+                    if (animationSchedulesController.value != 0) {
+                      animationSchedulesController.reverse();
+
+                      await Future.delayed(
+                          animationSchedulesController.duration!);
+                      animationSchedulesController.forward();
+                    } else {
+                      animationSchedulesController.forward();
+                    }
+                    ref
+                        .read(movieShowingControllerProvider.notifier)
+                        .selectADay(
+                          movie,
+                          movie.days.indexOf(day),
+                        );
+                  },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Container(

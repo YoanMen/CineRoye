@@ -11,7 +11,13 @@ class MovieShowing extends ConsumerWidget {
         ref.read(movieShowingControllerProvider.notifier).navigationMenu();
     final indexPage = ref.watch(movieShowingControllerProvider).indexPage;
     return Scaffold(
-        body: ref.read(movieShowingControllerProvider).page[indexPage],
-        bottomNavigationBar: navigationBar);
+      extendBody: true,
+      body: Stack(
+        children: [
+          ref.read(movieShowingControllerProvider).page[indexPage],
+          Align(alignment: Alignment.bottomCenter, child: navigationBar)
+        ],
+      ),
+    );
   }
 }

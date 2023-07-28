@@ -28,7 +28,7 @@ class _DetailScreenAnimationState extends State<DetailScreenAnimation>
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _scheduleController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 120));
+        vsync: this, duration: const Duration(milliseconds: 240));
 
     _controller.forward();
   }
@@ -56,7 +56,7 @@ class DetailScreen extends ConsumerWidget {
       required this.animationController,
       required this.animationSchedulesController})
       : posterOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-            parent: animationController, curve: const Interval(0.0, 0.2))),
+            parent: animationController, curve: const Interval(0.2, 0.8))),
         titleOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
             parent: animationController, curve: const Interval(0.2, 0.4))),
         genreOpacity = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(

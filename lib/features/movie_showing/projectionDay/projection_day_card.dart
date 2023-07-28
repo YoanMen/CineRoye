@@ -31,21 +31,28 @@ class ProjectionTimeCard extends ConsumerWidget {
                 padding: const EdgeInsets.only(right: kmediumSpace),
                 child: InkWell(
                   onTap: () async {
-                    if (animationSchedulesController.value != 0) {
-                      animationSchedulesController.reverse();
-
-                      await Future.delayed(
-                          animationSchedulesController.duration!);
-                      animationSchedulesController.forward();
-                    } else {
-                      animationSchedulesController.forward();
-                    }
-                    ref
+                    if (!ref
                         .read(movieShowingControllerProvider.notifier)
-                        .selectADay(
+                        .canSelectDay(
                           movie,
                           movie.days.indexOf(day),
-                        );
+                        )) {
+                      if (animationSchedulesController.value != 0) {
+                        animationSchedulesController.reverse();
+
+                        await Future.delayed(
+                            animationSchedulesController.duration!);
+                        animationSchedulesController.forward();
+                      } else {
+                        animationSchedulesController.forward();
+                      }
+                      ref
+                          .read(movieShowingControllerProvider.notifier)
+                          .selectADay(
+                            movie,
+                            movie.days.indexOf(day),
+                          );
+                    }
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),

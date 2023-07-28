@@ -47,8 +47,9 @@ class ComingSoonScreen extends ConsumerWidget {
                           child: isPhone
                               ? ListView.builder(
                                   itemCount: data.length,
-                                  itemBuilder: (context, index) => MovieList(
-                                      movie: data[index], theme: theme),
+                                  itemBuilder: (context, index) =>
+                                      MovieListAnimation(
+                                          movie: data[index], theme: theme),
                                 )
                               : GridView.builder(
                                   gridDelegate:
@@ -56,7 +57,8 @@ class ComingSoonScreen extends ConsumerWidget {
                                           mainAxisExtent: 200,
                                           crossAxisCount: 2),
                                   itemCount: data.length,
-                                  itemBuilder: (context, index) => MovieList(
+                                  itemBuilder: (context, index) =>
+                                      MovieListAnimation(
                                     movie: data[index],
                                     theme: theme,
                                   ),

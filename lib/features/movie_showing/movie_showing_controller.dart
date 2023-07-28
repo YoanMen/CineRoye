@@ -123,6 +123,7 @@ class MovieShowingController extends StateNotifier<MovieShowingState> {
     int daySelected =
         state.selectableDays.indexWhere((element) => element.selected == true);
 
+    print(daySelected);
     if (daySelected != -1) {
       final schedules = movie.schedules[daySelected];
       return Row(
@@ -152,8 +153,12 @@ class MovieShowingController extends StateNotifier<MovieShowingState> {
 
   //* when user select a selectable date
 
+  bool canSelectDay(Movie movie, int index) {
+    return movie.schedules[index].isEmpty;
+  }
+
   void selectADay(Movie movie, int index) {
-    if (movie.schedules[index] == null) return;
+    if (canSelectDay(movie, index)) return;
 
     List<ProjectionDay> projectionDays =
         createProjectionDays(movie.schedules, index);

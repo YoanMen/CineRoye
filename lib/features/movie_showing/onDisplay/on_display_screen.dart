@@ -49,8 +49,8 @@ class DisplayScreen extends ConsumerWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: data.length,
-                        itemBuilder: (context, index) =>
-                            MovieList(movie: data[index], theme: theme),
+                        itemBuilder: (context, index) => MovieListAnimation(
+                            movie: data[index], theme: theme),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).padding.top + 20,

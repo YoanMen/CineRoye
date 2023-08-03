@@ -27,7 +27,14 @@ class DisplayScreen extends ConsumerWidget {
               error: error,
             ),
         data: (data) {
-          return Scaffold(
+          return data.isEmpty
+              ? ErrorMessage(
+                  onRefresh: ref
+                      .read(movieShowingControllerProvider.notifier)
+                      .fetchComingSoon,
+                  error: "Aucun films en projection",
+                )
+              : Scaffold(
               body: SafeArea(
             child: RefreshIndicator(
                 backgroundColor: blackColor,

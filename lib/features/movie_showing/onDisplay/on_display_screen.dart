@@ -31,7 +31,7 @@ class DisplayScreen extends ConsumerWidget {
               ? ErrorMessage(
                   onRefresh: ref
                       .read(movieShowingControllerProvider.notifier)
-                      .fetchComingSoon,
+                      .fetchMovies,
                   error: "Aucun films en projection",
                 )
               : Scaffold(
